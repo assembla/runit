@@ -104,6 +104,8 @@ class Chef
           if new_resource.sv_templates
             Chef::Log.debug("Creating sv_dir for #{new_resource.service_name}")
             sv_dir.run_action(:create)
+            Chef::Log.debug("Creating service_dir for #{new_resource.service_name}")
+            service_dir.run_action(:create)
             Chef::Log.debug("Creating run_script for #{new_resource.service_name}")
             run_script.run_action(:create)
 
@@ -229,6 +231,10 @@ class Chef
           end
         end
 
+        def action_configure
+          configure_service
+        end
+
         def action_usr1
           runit_send_signal(1, :usr1)
         end
@@ -305,6 +311,16 @@ exec svlogd -tt /var/log/#{new_resource.service_name}"
           @sv_dir.group(new_resource.group)
           @sv_dir.mode(00755)
           @sv_dir
+        end
+
+        def service_dir
+          return @service_dir unless @service_dir.nil?
+          @service_dir = Chef::Resource::Directory.new(new_resource.service_dir, run_context)
+          @service_dir.recursive(true)
+          @service_dir.owner(new_resource.owner)
+          @service_dir.group(new_resource.group)
+          @service_dir.mode(00755)
+          @service_dir
         end
 
         def run_script
