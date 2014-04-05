@@ -151,8 +151,10 @@ class Chef
             end
           end
 
-          Chef::Log.debug("Creating lsb_init compatible interface #{new_resource.service_name}")
-          lsb_init.run_action(:create)
+          if new_resource.lsb_init
+            Chef::Log.debug("Creating lsb_init compatible interface #{new_resource.service_name}")
+            lsb_init.run_action(:create)
+          end
         end
 
         def enable_service

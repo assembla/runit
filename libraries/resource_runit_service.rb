@@ -42,6 +42,7 @@ class Chef
         @sv_dir = runit_node[:sv_dir] || '/etc/sv'
         @service_dir = runit_node[:service_dir] || '/etc/service'
         @lsb_init_dir = runit_node[:lsb_init_dir] || '/etc/init.d'
+        @lsb_init = runit_node[:lsb_init] || true
 
         @control = []
         @options = {}
@@ -113,6 +114,10 @@ class Chef
 
       def service_dir(arg = nil)
         set_or_return(:service_dir, arg, :kind_of => [String])
+      end
+
+      def lsb_init(arg = nil)
+        set_or_return(:lsb_init, arg, :kind_of => [TrueClass, FalseClass])
       end
 
       def lsb_init_dir(arg = nil)
