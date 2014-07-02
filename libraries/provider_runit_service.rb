@@ -158,6 +158,11 @@ class Chef
         end
 
         def enable_service
+          Chef::Log.debug("Removing supervise run dir for #{new_resource.service_name}")
+          supervise_dir = Chef::Resource::Directory.new("#{service_dir_name}/supervise", run_context)
+          supervise_dir.recursive(true)
+          supervise_dir.run_action(:delete)
+
           Chef::Log.debug("Creating symlink in service_dir for #{new_resource.service_name}")
           service_link.run_action(:create)
 
@@ -166,6 +171,9 @@ class Chef
             sleep 1
             Chef::Log.debug('.')
           end
+
+          pid_file = "#{service_dir_name}/supervise/pid"
+          Chef::Log.debug("#{pid_file}: #{::File.read pid_file}")
 
           if new_resource.log
             Chef::Log.debug("waiting until named pipe #{service_dir_name}/log/supervise/ok exists.")
