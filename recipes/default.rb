@@ -111,6 +111,17 @@ when 'debian', 'gentoo'
     notifies :enable, 'service[runit-start]' if platform?('gentoo')
   end
 
+  packages = value_for_platform(
+    'debian' => { '>=9' => %w(runit-systemd) },
+    'default' => %w()
+  )
+
+  packages.each do |p|
+    package p do
+      action :install
+    end
+  end
+
   if node['platform'] =~ /ubuntu/i && node['platform_version'].to_f <= 8.04
     cookbook_file '/etc/event.d/runsvdir' do
       source 'runsvdir'
