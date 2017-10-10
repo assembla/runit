@@ -26,6 +26,9 @@ describe 'runit_test::default' do
     it 'has been installed' do
       package('runit').must_be_installed
     end
+    it 'has been installed' do
+      package('runit-systemd').must_be_installed if node['platform_family'] == 'debian' && node['platform_version'].to_f >= 9
+    end
   end
 
   it 'The service runitsvdir should be running' do
@@ -41,7 +44,7 @@ describe 'runit_test::default' do
   end
 
   it 'It should have a file called run in /etc/sv/getty-5' do
-    file('/etc/sv/getty-5/run').must_exist if node['platform_family'] == 'debian'
+    file('/etc/sv/getty-5/run').must_exist if node['platform_family'] == 'debian' && node['platform_version'].to_f < 9
   end
 
 end

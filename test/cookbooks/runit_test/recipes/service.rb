@@ -32,7 +32,6 @@ user 'floyd' do
   shell '/bin/bash'
   home '/home/floyd'
   manage_home true
-  supports :manage_home => true
 end
 
 %w{ sv service }.each do |dir|
